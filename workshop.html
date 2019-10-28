@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@16/umd/react.development.js" ></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js'></script>
+    <title>Update</title>
+
+<style>
+    nav {
+        display: flex;
+        justify-content: space-around;
+    }
+    .selected {
+        border: solid 1px black;
+        background-color: orange
+    }
+</style>
+</head>
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        console.log(React)
+        
+        const {HashRouter, Switch, Link, Route, Redirect } = ReactRouterDOM;
+        const { render } = ReactDOM;
+
+        const Notes = () => {
+            return (
+                <h1>Insert Stuff</h1>
+                )
+        }
+        const Archived = () => <div> Squad </div>
+
+        const Create = () => {
+            return (
+                <div>
+                    <h1> Acme Note - taker for Marjory Spencer </h1>
+                    <input value={ name } onChange={(ev)=> this.setState({name:ev.target.value})}/> 
+                    <button>Create </button>
+                </div>
+            )
+        }
+        
+        const Nav = (props) => {
+            const path = props.path
+
+            return (
+                <nav>
+                    <Link to ='/notes' className ={path === '/notes' ? 'selected':''} > Notes ({props.notes.length})</Link>
+                    <Link to='/archived' className={path ==='/archived' ? 'selected':''}> Archived (0)</Link>
+                    <Link to='/create' className={path ==='/create' ? 'selected':''}> Create </Link>
+                </nav>
+            )
+        }
+
+        class App extends React.Component {
+            constructor () {
+                super();
+                this.state = {
+                    notes: [34,5,6],
+                    archived: []
+                }
+                this.onChangeNotes = this.onChangeNotes.bind(this)
+            }
+            onChangeNotes(props){
+            this.setState({notes})
+            this.setState({archived})
+        }
+            
+            render () {
+                const { notes } = this.state;
+                const { archived } = this.state;
+
+                return (
+                    <HashRouter>
+                        <Route render= { (props)=> <Nav notes= { notes } path= {props.location.pathname}/> }/>
+
+                        <Switch>   
+                            <Route path ='/notes' component = { Notes } render={()=> <Notes notes= { notes }/> }/>
+                            <Route path = '/archived' component = { Archived } render={()=> <Archived archived= { archived }/> }/>
+                            <Route path = '/create' component = { Create } />
+                            <Redirect to ='create'/>
+                        </Switch>
+
+                    </HashRouter>
+                )
+            }
+        }
+
+        const root = document.querySelector('#root');
+        render(<App />,root)
+                
+    </script>
+    
+</body>
+</html>
