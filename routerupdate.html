@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@16/umd/react.development.js" ></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js'></script>
+    <title>Update</title>
+
+<style>
+    nav {
+        display: flex;
+        justify-content: space-around;
+    }
+    .selected {
+        border: solid 1px black;
+    }
+</style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const {HashRouter, Switch, Link, Route, Redirect } = ReactRouterDOM;
+        const { render } = ReactDOM
+
+        const root = document.querySelector('#root');
+
+        const Home = () => {
+            return (
+                <h1>Home</h1>
+                )
+        }
+        const About = () => <div> Squad </div>
+
+        const Users = ({users}) => {
+            return (
+                <div>
+                    
+                    <h1> Users</h1>
+                    <ul> 
+                        {
+                            users.map((user,idx )=> <li key={ idx }>{user.name}</li>)
+                        }
+                    </ul>
+                </div>
+            )
+        }
+
+        const Nav = (props) => {
+            const path = props.path
+           
+            return (
+                <nav>
+                    <Link to ='/home' className ={path === '/home' ? 'selected':''}> Home Header </Link>
+                    <Link to='/about' className={path ==='/about' ? 'selected':''}> About Header </Link>
+                    <Link to='/users' className={path ==='/users' ? 'selected':''}> Users ({props.users.length})</Link>
+                </nav>
+            )
+        }
+
+        class App extends React.Component {
+            constructor () {
+                super();
+                this.state = {
+                    users: [
+                        {name: 'moe'},
+                        {name: 'larry'}, 
+                        {name: 'kevin'}
+                    ]
+                };
+            }
+        
+            componentDidMount () {
+                window.setTimeout(()=>{
+                    const users = [...this.state.users, {name:'Include this Name'}];
+                    this.setState= { users }  
+                    console.log(users)
+                },1000);
+            }
+
+            render () {
+                const { users } = this.state;
+                return (
+                    <HashRouter>
+                        <Route render= { (props)=> <Nav users= { users } path= {props.location.pathname}/> }/>
+                        <Switch>   
+                            <Route path ='/home' component = { Home }/>
+                            <Route path = '/about' component = { About }/>
+                            <Route path = '/users' render={()=> <Users users= {users}/> }/>
+                            <Redirect to ='home'/>
+                        </Switch>
+                    </HashRouter>
+                )
+            }
+        }
+
+        render(<App/>,root)
+
+    </script>
+    
+</body>
+</html>
